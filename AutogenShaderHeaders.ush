@@ -110,7 +110,8 @@ FGBufferData  DecodeGBufferDataDirect(float4 InMRT1,
 FGBufferData DecodeGBufferDataUV(float2 UV, bool bGetNormalizedNormal = true)
 {
 	float CustomNativeDepth = Texture2DSampleLevel(SceneTexturesStruct.CustomDepthTexture, SceneTexturesStruct_CustomDepthTextureSampler, UV, 0).r;
-	uint CustomStencil = 0;
+	int2 IntUV = (int2)trunc(UV * View.BufferSizeAndInvSize.xy);
+	uint CustomStencil = SceneTexturesStruct.CustomStencilTexture.Load(int3(IntUV, 0)) STENCIL_COMPONENT_SWIZZLE;
 	float SceneDepth = CalcSceneDepth(UV);
 	float4 AnisotropicData = Texture2DSampleLevel(SceneTexturesStruct.GBufferFTexture, SceneTexturesStruct_GBufferFTextureSampler, UV, 0).xyzw;
 
